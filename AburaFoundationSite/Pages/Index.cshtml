@@ -1,0 +1,212 @@
+﻿@page
+@model AburaFoundationSite.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Abura Foundation - Home";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- Hero Section -->
+<section class="bg-dark text-white text-center d-flex align-items-center" style="height: 100vh; background: url('/images/hero-bg.jpg') center/cover no-repeat;">
+    <div class="container">
+        <div class="bg-dark bg-opacity-75 p-5 rounded-3">
+            <h1 class="display-4 fw-bold">Together We Can Change the World</h1>
+            <p class="lead my-4">From national leaders to individuals looking for a place to start, we invite you to explore our work and be a part of the change.</p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="tel:254757530509" class="btn btn-warning fw-bold px-4 py-2">CALL US NOW</a>
+                <a href="/Programs" class="btn btn-outline-light px-4 py-2">MORE DETAILS</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section (Inspired by image) -->
+<section class="py-5 text-white" style="background: url('/images/about1.jpg') center/cover no-repeat;">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <h6 class="text-uppercase text-light">Because We Can</h6>
+                <h2 class="fw-bold display-5">How can we help them?</h2>
+                <p class="lead">
+                    Our dream is to create a bright future for underprivileged children through concerted efforts of providing access to quality education, healthcare, and mentorship programs. We ensure equal opportunities and supportive environments that empower these children to reach their full potential and thrive despite their circumstances.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3 my-3">
+                    <div><i class="bi bi-check-circle-fill text-primary me-1"></i> Help for Education</div>
+                    <div><i class="bi bi-check-circle-fill text-primary me-1"></i> Help for Women</div>
+                    <div><i class="bi bi-check-circle-fill text-primary me-1"></i> Help for Healthcare</div>
+                    <div><i class="bi bi-check-circle-fill text-primary me-1"></i> Help for Mentorship</div>
+                </div>
+                <a href="/Join" class="btn btn-primary fw-bold px-4 mt-2">Join Our Team Today</a>
+            </div>
+        </div>
+
+        <!-- 4 Info Cards -->
+        <div class="row g-4 text-center">
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 bg-white text-dark rounded shadow-sm h-100">
+                    <div class="mb-3">
+                        <i class="bi bi-mortarboard-fill fs-1 text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Education</h5>
+                    <p class="mb-0">Become a part of our education projects.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 bg-white text-dark rounded shadow-sm h-100">
+                    <div class="mb-3">
+                        <i class="bi bi-journal-bookmark-fill fs-1 text-warning"></i>
+                    </div>
+                    <h5 class="fw-bold">Mentorship Program</h5>
+                    <p class="mb-0">Join our mentorship program.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 bg-white text-dark rounded shadow-sm h-100">
+                    <div class="mb-3">
+                        <i class="bi bi-hospital-fill fs-1 text-success"></i>
+                    </div>
+                    <h5 class="fw-bold">Healthcare</h5>
+                    <p class="mb-0">Join us to improve the healthcare system.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 bg-white text-dark rounded shadow-sm h-100">
+                    <div class="mb-3">
+                        <i class="bi bi-person-fill fs-1 text-info"></i>
+                    </div>
+                    <h5 class="fw-bold">Women Empowerment</h5>
+                    <p class="mb-0">Join our women support programs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Program Section -->
+<section class="py-5" style="background-color: #f9f9f9;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">Our Programs</h2>
+        </div>
+
+        <div class="row align-items-center">
+            <!-- Left Text Column -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h4 class="text-uppercase text-secondary">You can help lots of people by donating little​</h4>
+                <h6 class="fw-bold text-dark my-3">Your assistance is vital in transforming hope into tangible action—encouraging, empowering, and 
+                    uniting individuals to enact change in their world.</h6>
+   <section class="py-5 bg-light">
+    <div class="container">
+         <div class="row">
+            <!-- Left Column: Two Images -->
+            <div class="col-md-6">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <img src="/images/program6.jpg" alt="Program Image" class="img-fluid rounded shadow w-100" style="max-height: 300px; object-fit: cover;">
+                    </div>
+                    <div class="col-12">
+                        <img src="/images/program7.jpg" alt="Program Image" class="img-fluid rounded shadow w-100" style="max-height: 300px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Two Images -->
+            <div class="col-md-6">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <img src="/images/program4.jpg" alt="Program Image" class="img-fluid rounded shadow w-100" style="max-height: 300px; object-fit: cover;">
+                    </div>
+                    <div class="col-12">
+                        <img src="/images/program5.jpg" alt="Program Image" class="img-fluid rounded shadow w-100" style="max-height: 300px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+            </div>
+
+            <!-- Right Image Column -->
+            <div class="col-lg-6 text-center">
+                <img src="/images/program1.png" alt="Programs Image" class="img-fluid rounded shadow" style="max-height: 400px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h3 class="fw-bold">Ready to Make an Impact?</h3>
+        <p class="mb-4">We won’t stop until all our communities are better.</p>
+        <a href="/Contact" class="btn btn-light fw-semibold me-3">Contact Us</a>
+        <a href="/Donation" class="btn btn-outline-light fw-semibold">Donate Now</a>
+    </div>
+</section>
+
+<section class="bg-primary text-white py-5 text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h2 class="counter" data-target="7000">0</h2>
+        <p>Lives Touched</p>
+      </div>
+      <div class="col-md-4">
+        <h2 class="counter" data-target="5000">0</h2>
+        <p>Youths & Women </p>
+      </div>
+      <div class="col-md-4">
+        <h2 class="counter" data-target="47">0</h2>
+        <p>Counties Reached</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.counter').forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-target');
+      const count = +counter.innerText;
+      const speed = 200; // Lower is faster
+
+      const increment = target / speed;
+
+      if (count < target) {
+        counter.innerText = Math.ceil(count + increment);
+        setTimeout(updateCount, 20);
+      } else {
+        counter.innerText = target;
+      }
+    };
+
+    updateCount();
+  });
+</script>
+
+<!-- Testimonials -->
+  <section class="py-5 bg-light text-center">
+  <div class="container">
+    <h2 class="fw-bold mb-4">What Our Participants Say</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-4 mb-4">
+        <blockquote class="blockquote">
+          <p class="mb-0">"The Foundation changed my life – I joined the Mentorship Program!"</p>
+          <footer class="blockquote-footer mt-2">Jane M., Kisumu</footer>
+        </blockquote>
+      </div>
+      <div class="col-md-4 mb-4">
+        <blockquote class="blockquote">
+          <p class="mb-0">"Thanks to the Foundation, I now run my own bee farm profitably."</p>
+          <footer class="blockquote-footer mt-2">Peter O., Homa Bay</footer>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>

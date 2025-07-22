@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36310.24
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AburaFoundationSite", "AburaFoundationSite\AburaFoundationSite.csproj", "{D5118E75-31C2-4025-AFFA-2936B3ADB7B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5118E75-31C2-4025-AFFA-2936B3ADB7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5118E75-31C2-4025-AFFA-2936B3ADB7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5118E75-31C2-4025-AFFA-2936B3ADB7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5118E75-31C2-4025-AFFA-2936B3ADB7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {606A00F9-641E-4CB5-A782-249DE5096506}
+	EndGlobalSection
+EndGlobal
