@@ -7,7 +7,9 @@
 <div class="container py-5">
     <h1 class="text-primary fw-bold mb-4">Be Part of the Change! Donate Now</h1>
 
-    <form id="donationForm">
+    <form id="donationForm" method="post">
+        @Html.AntiForgeryToken()
+
         <div class="mb-3">
             <label for="Amount" class="form-label">Amount (KES or USD):</label>
             <input asp-for="Donation.Amount" class="form-control" id="Amount" />
@@ -20,92 +22,76 @@
                 <option value="">-- Select Method --</option>
                 <option value="PayPal">PayPal</option>
                 <option value="MPesa">M-Pesa</option>
+                <option value="Card">Credit/Debit Card</option>
             </select>
             <span asp-validation-for="Donation.PaymentMethod" class="text-danger"></span>
         </div>
 
+        <div id="phoneSection" class="mb-3" style="display:none;">
+            <label for="PhoneNumber" class="form-label">M-Pesa Phone Number:</label>
+            <input asp-for="PhoneNumber" class="form-control" id="PhoneNumber" />
+        </div>
+
         <div id="paypal-button-container" class="mb-3" style="display:none;"></div>
+        <div id="card-button-container" class="mb-3" style="display:none;"></div>
 
         <button id="donateButton" type="submit" class="btn btn-primary w-100">Donate</button>
     </form>
 </div>
 
 @section Scripts {
-    <!-- PayPal Smart Buttons with Credit Card support -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AUsO3F89ZKeIlRwvq61ilbz5XAkGjIkfWPWfun8YioHXS-LG1UwEJY7MapT9tbWuuAn9H7qOX5NaV-wU&components=buttons,hosted-fields&enable-funding=card&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AUsO3F89ZKeIlRwvq61ilbz5XAkGjIkfWPWfun8YioHXS-LG1UwEJY7MapT9tbWuuAn9H7qOX5NaV-wU&components=buttons,funding-eligibility&enable-funding=card&currency=USD"></script>
 
     <script>
-        function togglePayment(method) {
-            document.getElementById("paypalSection").style.display = method === "PayPal" ? "block" : "none";
-            document.getElementById("cardSection").style.display = method === "Card" ? "block" : "none";
-            document.getElementById("mpesaSection").style.display = method === "Mpesa" ? "block" : "none";
-            document.getElementById("phoneSection").style.display = method === "Mpesa" ? "block" : "none";
-        }
+    const methodSelect = document.getElementById("PaymentMethod");
+    const phoneSection = document.getElementById("phoneSection");
+    const paypalButton = document.getElementById("paypal-button-container");
+    const cardButton = document.getElementById("card-button-container");
 
-        function showConfirmModal() {
-            const amount = document.getElementById("Amount").value;
-            const method = document.getElementById("PaymentMethod").value;
+    methodSelect.addEventListener("change", function () {
+        const method = this.value;
+        phoneSection.style.display = method === "MPesa" ? "block" : "none";
+        paypalButton.style.display = method === "PayPal" ? "block" : "none";
+        cardButton.style.display = method === "Card" ? "block" : "none";
+    });
 
-            if (!amount || !method) return false;
+       const getAmount = () => {
+        const amountInput = document.getElementById("Amount");
+        return amountInput && amountInput.value ? amountInput.value : "1";
+    };
 
-            document.getElementById("confirmAmount").textContent = amount;
-            document.getElementById("confirmMethod").textContent = method;
-            document.getElementById("confirmModal").style.display = "block";
-            return false;
-        }
-
-        function hideConfirmModal() {
-            document.getElementById("confirmModal").style.display = "none";
-        }
-
-        function proceedDonation() {
-            hideConfirmModal();
-            document.getElementById("spinner").style.display = "block";
-            document.getElementById("donationForm").submit();
-        }
-
-        // ========== PAYPAL BUTTON ==========
+    window.onload = function () {
         paypal.Buttons({
             fundingSource: paypal.FUNDING.PAYPAL,
-            style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
-            createOrder: function (data, actions) {
-                const amount = document.getElementById("Amount").value || "1";
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: amount } }]
-                });
-            },
-            onApprove: function (data, actions) {
-                return actions.order.capture().then(function (details) {
-                    alert('✅ Transaction completed by ' + details.payer.name.given_name);
-                    // Optionally auto-submit form or redirect here
-                });
-            },
-            onError: function (err) {
-                console.error('❌ PayPal error:', err);
+            createOrder: (data, actions) => actions.order.create({
+                purchase_units: [{ amount: { value: getAmount() } }]
+            }),
+            onApprove: (data, actions) => actions.order.capture().then(details => {
+                alert(`✅ PayPal transaction completed by ${details.payer.name.given_name}`);
+                document.getElementById("donationForm").submit();
+            }),
+            onError: err => {
+                console.error("❌ PayPal error:", err);
                 alert("❌ An error occurred while processing your PayPal payment.");
             }
         }).render('#paypal-button-container');
 
-        // ========== CREDIT/DEBIT CARD BUTTON ==========
         paypal.Buttons({
             fundingSource: paypal.FUNDING.CARD,
-            style: { layout: 'vertical', color: 'silver', shape: 'rect', label: 'pay' },
-            createOrder: function (data, actions) {
-                const amount = document.getElementById("Amount").value || "1";
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: amount } }]
-                });
-            },
-            onApprove: function (data, actions) {
-                return actions.order.capture().then(function (details) {
-                    alert('✅ Card payment successful by ' + details.payer.name.given_name);
-                    // Optionally auto-submit form or redirect here
-                });
-            },
-            onError: function (err) {
-                console.error('❌ Card payment error:', err);
+            createOrder: (data, actions) => actions.order.create({
+                purchase_units: [{ amount: { value: getAmount() } }]
+            }),
+            onApprove: (data, actions) => actions.order.capture().then(details => {
+                alert(`✅ Card payment completed by ${details.payer.name.given_name}`);
+                document.getElementById("donationForm").submit();
+            }),
+            onError: err => {
+                console.error("❌ Card payment error:", err);
                 alert("❌ An error occurred while processing your Card payment.");
             }
         }).render('#card-button-container');
-    </script>
+    };
+</script>
+
+
 }

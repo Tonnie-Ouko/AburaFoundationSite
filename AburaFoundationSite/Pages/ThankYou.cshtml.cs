@@ -1,66 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Net;
-using System.Net.Mail;
+using AburaFoundationSite.Data;
+using AburaFoundationSite.Models;
+using System.Threading.Tasks;
 
 namespace AburaFoundationSite.Pages
 {
     public class ThankYouModel : PageModel
     {
-        [BindProperty(SupportsGet = true)]
-        public decimal Amount { get; set; }
+        private readonly AppDbContext _context;
 
-        [BindProperty(SupportsGet = true)]
-        public string Method { get; set; } = string.Empty;
-
-        public string DisplayMethod => Method.ToLower() switch
+        public ThankYouModel(AppDbContext context)
         {
-            "paypal" => "PayPal",
-            "mpesa" => "M-Pesa",
-            _ => "Unknown"
-        };
-
-        public void OnGet()
-        {
-            SendConfirmationEmail(Amount, DisplayMethod);
+            _context = context;
         }
 
-        private void SendConfirmationEmail(decimal amount, string method)
+        [BindProperty]
+        public Donation Donation { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            try
-            {
-                var fromEmail = "donations@abura.org";
-                var toEmail = "recipient@email.com"; // Replace with donor email when captured
-                var smtpHost = "smtp.yourmailhost.com";
-                var smtpPort = 587;
+            Donation = await _context.Donations.FindAsync(id);
 
-                var message = new MailMessage(fromEmail, toEmail)
-                {
-                    Subject = "Your Donation Receipt – Abura Foundation",
-                    Body = $@"
-Thank you for your donation!
+            if (Donation == null)
+                return NotFound();
 
-Amount: {amount:C}
-Method: {method}
-Date: {DateTime.Now:dd MMM yyyy, HH:mm}
-
-We appreciate your support!
-– Abura Foundation Team",
-                    IsBodyHtml = false
-                };
-
-                var client = new SmtpClient(smtpHost, smtpPort)
-                {
-                    Credentials = new NetworkCredential("your-smtp-username", "your-smtp-password"),
-                    EnableSsl = true
-                };
-
-                client.Send(message);
-            }
-            catch (Exception ex)
-            {
-                // Optional: Log email error
-            }
+            return Page();
         }
     }
 }

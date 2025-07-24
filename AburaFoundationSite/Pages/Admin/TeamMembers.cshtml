@@ -1,0 +1,66 @@
+﻿@page
+@using AburaFoundationSite.Models
+@model AdminTeamMembersModel
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@{
+    ViewData["Title"] = "Team Members";
+}
+
+<h2 class="mb-4">Team Members</h2>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-page="./TeamMembers" asp-route-add="true">Add New Member</a>
+</div>
+
+@if (Model.IsAdding || Model.IsEditing)
+{
+    <form method="post" enctype="multipart/form-data" class="border p-4 bg-light mb-4">
+        <input type="hidden" asp-for="TeamMember.Id" />
+        <div class="form-group">
+            <label asp-for="TeamMember.FullName"></label>
+            <input asp-for="TeamMember.FullName" class="form-control" />
+            <span asp-validation-for="TeamMember.FullName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TeamMember.Role"></label>
+            <input asp-for="TeamMember.Role" class="form-control" />
+            <span asp-validation-for="TeamMember.Role" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TeamMember.PhotoUrl">Photo URL (external or uploaded)</label>
+            <input asp-for="TeamMember.PhotoUrl" class="form-control" />
+            <span asp-validation-for="TeamMember.PhotoUrl" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+        <a class="btn btn-secondary" asp-page="./TeamMembers">Cancel</a>
+    </form>
+}
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Photo</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model.Members)
+        {
+            <tr>
+                <td>@member.FullName</td>
+                <td>@member.Role</td>
+                <td>
+                    <img src="@member.PhotoUrl" alt="@member.FullName" class="img-thumbnail" style="width:60px; height:60px;" />
+                </td>
+                <td>
+                    <a asp-page="./TeamMembers" asp-route-edit="@member.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@member.Id" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this team member?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

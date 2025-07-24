@@ -1,0 +1,110 @@
+﻿@page
+@using AburaFoundationSite.Models
+@model DonationsModel
+@{
+    ViewData["Title"] = "Donations";
+}
+
+<h1 class="mb-4">Donations</h1>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Search by Phone or Reference" />
+    </div>
+    <div class="col-md-2">
+        <select name="Status" class="form-control">
+            <option value="">All Statuses</option>
+            <option value="Success" selected="@("Success" == Model.Status)">Success</option>
+            <option value="Pending" selected="@("Pending" == Model.Status)">Pending</option>
+            <option value="Failed" selected="@("Failed" == Model.Status)">Failed</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="StartDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="EndDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-3 d-flex justify-content-end gap-2">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a asp-page="Donations" asp-route-export="true"
+           asp-route-SearchTerm="@Model.SearchTerm"
+           asp-route-Status="@Model.Status"
+           asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+           asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+           class="btn btn-outline-success">Export CSV</a>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Phone</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Reference</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.PagedDonations.Any())
+        {
+            foreach (var donation in Model.PagedDonations)
+            {
+                <tr>
+                    <td>@donation.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@donation.Amount.ToString("C")</td>
+                    <td>@donation.PhoneNumber</td>
+                    <td>@donation.PaymentMethod</td>
+                    <td>
+                        <span class="badge bg-@GetStatusColor(donation.Status)">@donation.Status</span>
+                    </td>
+                    <td>@donation.Reference</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary" asp-page="/PdfReceipt" asp-route-id="@donation.Id" target="_blank">PDF</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted">No donations found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link"
+                   asp-page="Donations"
+                   asp-route-Page="@i"
+                   asp-route-SearchTerm="@Model.SearchTerm"
+                   asp-route-Status="@Model.Status"
+                   asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                   asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@functions {
+    string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Success" => "success",
+            "Pending" => "warning",
+            "Failed" => "danger",
+            _ => "secondary"
+        };
+    }
+}

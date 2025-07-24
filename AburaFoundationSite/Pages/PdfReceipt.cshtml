@@ -1,0 +1,65 @@
+﻿@page "{id:int}"
+@model PdfReceiptModel
+@{
+    Layout = null; // Minimal layout for clean PDF rendering
+    var donation = Model.Donation;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Donation Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            color: #333;
+        }
+
+        h2 {
+            color: #2e6da4;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .footer {
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 60px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h2>Official Donation Receipt</h2>
+
+    <table>
+        <tr><th>Donation ID</th><td>@donation.Id</td></tr>
+        <tr><th>Amount</th><td>@donation.Amount.ToString("C")</td></tr>
+        <tr><th>Payment Method</th><td>@donation.PaymentMethod</td></tr>
+        <tr><th>Status</th><td>@donation.Status</td></tr>
+        @if (!string.IsNullOrEmpty(donation.PhoneNumber))
+        {
+            <tr><th>Phone Number</th><td>@donation.PhoneNumber</td></tr>
+        }
+        <tr><th>Date</th><td>@donation.Date.ToString("f")</td></tr>
+    </table>
+
+    <div class=\"footer\">
+        Thank you for supporting Abura Foundation. This receipt serves as confirmation of your donation.<br />
+        © @DateTime.Now.Year Abura Foundation
+    </div>
+</body>
+</html>

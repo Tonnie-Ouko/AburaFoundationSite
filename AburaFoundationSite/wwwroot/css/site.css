@@ -260,3 +260,14 @@ a {
 .animate-fade-in {
     animation: fadeIn 1.2s ease-out both;
 }
+
+.about-hero h1, .about-hero h2, .about-hero p {
+    color: #fff;
+}
+
+.about-hero .btn {
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-size: 1.1rem;
+}
+

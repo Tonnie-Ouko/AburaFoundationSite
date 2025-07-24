@@ -7,6 +7,8 @@
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string PaymentMethod { get; set; } = string.Empty;
+        public string? Reference { get; set; }  // make nullable or required as needed
+
         public decimal Amount { get; set; }
         public DateTime DonationDate { get; set; } = DateTime.UtcNow;
 

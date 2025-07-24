@@ -1,4 +1,167 @@
 ﻿@page
 @model AburaFoundationSite.Pages.AboutModel
 @{
+    ViewData["Title"] = "About Us";
 }
+
+<div class="container py-3">
+    <h1 class="fw-bold text-primary mb-4" align="center">About Abura Foundation</h1>
+
+    <div class="mb-4">
+        <p>
+            We have faith in the collective strength of ordinary individuals collaborating to enact transformation. 
+            Your assistance is vital in transforming hope into tangible action—encouraging, empowering, and uniting individuals to enact change in their world.
+        </p>
+        <p>
+            Since our inception, we have impacted thousands of lives by promoting education, health, and economic empowerment 
+            across rural and underserved regions.
+        </p>
+    </div>
+
+    <!-- ✅ Mission -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+            <section class="py-5 bg-light">
+                <div class="container text-center">
+                    <div class="row g-5">
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="icon-box bg-primary text-white mx-auto mb-3">
+                                <i class="fas fa-bullseye fa-2x"></i>
+                            </div>
+                            <h4 class="fw-bold">Mission</h4>
+                            <p class="text-muted">
+                                We envision a world abundant with opportunities, engagement, and confidence.
+                            </p>
+                        </div>
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="icon-box bg-warning text-white mx-auto mb-3">
+                                <i class="fas fa-handshake-angle fa-2x"></i>
+                            </div>
+                            <h4 class="fw-bold">Values</h4>
+                            <ul class="list-unstyled text-muted">
+                                <li>Integrity</li>
+                                <li>Collaboration</li>
+                                <li>Impact</li>
+                                <li>Empowerment</li>
+                                <li>Accountability</li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                            <div class="icon-box bg-secondary text-white mx-auto mb-3">
+                                <i class="fas fa-people-group fa-2x"></i>
+                            </div>
+                            <h4 class="fw-bold">Goals</h4>
+                            <p class="text-muted">
+                                We have faith in the collective strength of ordinary individuals collaborating to enact transformation.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <style>
+                .icon-box {
+                    width: 70px;
+                    height: 70px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 12px;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .icon-box:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+                }
+
+                .about-hero h1, .about-hero h2, .about-hero p {
+                    color: #fff;
+                }
+
+                .about-hero .btn {
+                    border-radius: 30px;
+                    padding: 10px 30px;
+                    font-size: 1.1rem;
+                }
+            </style>
+
+            <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+            <script>
+                AOS.init({
+                    duration: 1000,
+                    once: true
+                });
+            </script>
+
+
+    <!-- ✅ Team -->
+        <section class="py-5 text-white" style="background: url('/images/program3.jpg') center/cover fixed;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Our Team</h2>
+                    <p class="lead">Meet the passionate minds behind the mission</p>
+                </div>
+             </div>
+
+             <div class="row row-cols-1 row-cols-md-3 g-4">
+                  @foreach (var member in Model.Team)
+                    {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="@member.PhotoUrl" class="card-img-top" alt="@member.FullName" style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@member.FullName</h5>
+                            <p class="card-text text-muted">@member.Role</p>
+                        </div>
+                    </div>
+                </div>
+            }
+</div>
+        </section>
+
+     <br>
+     <br>
+     
+    <!-- New Section -->    
+     <section class="about-hero text-white d-flex align-items-center" style="background: url('/images/program13.jpg') center/cover no-repeat; height: 80vh; position: relative;">
+       <div style="position: absolute; top:0; left:0; right:0; bottom:0; background-color: rgba(0,0,0,0.5);"></div>
+
+        <div class="container position-relative z-2">
+            <div class="row align-items-center">
+                <!-- Left Stats -->
+                <div class="col-md-5 mb-4 mb-md-0 text-center text-md-start">
+                    <div class="mb-4">
+                        <h2 class="display-4 fw-bold">15</h2>
+                        <p class="text-uppercase">Years of Experience</p>
+                    </div>
+                    <div class="mb-4">
+                        <h2 class="display-4 fw-bold">23+</h2>
+                        <p class="text-uppercase">Thousand Volunteers</p>
+                    </div>
+                    <div>
+                        <h2 class="display-4 fw-bold">7000+</h2>
+                        <p class="text-uppercase">Lives Touched</p>
+                    </div>
+                </div>
+
+                <!-- Right Content -->
+                <div class="col-md-7 text-center text-md-start">
+                    <h6 class="text-uppercase text-info">About Us</h6>
+                    <h2 class="fw-bold mb-3">Step forward to serve humanity,<br />reachout now & help</h2>
+                    <p class="lead mb-4">
+                        Your assistance is vital in transforming hope into tangible action—encouraging, empowering, and uniting individuals to enact change in their world.
+                    </p>
+                    <a href="/donation" class="btn btn-primary btn-lg">Get Involved</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+ </div>

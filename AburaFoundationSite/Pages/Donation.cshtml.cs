@@ -1,27 +1,33 @@
+﻿using AburaFoundationSite.Data;
+using AburaFoundationSite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
-using AburaFoundationSite.Data; // Your actual namespace
-using AburaFoundationSite.Models; // Assuming Donation model is here
-using System.Threading.Tasks;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace AburaFoundationSite.Pages
 {
     public class DonationModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _config;
+        private readonly MpesaStkPushService _mpesa;
 
-        public DonationModel(AppDbContext context)
+        public DonationModel(AppDbContext context, IConfiguration config, MpesaStkPushService mpesa)
         {
-
             _context = context;
+            _config = config;
+            _mpesa = mpesa;
         }
 
         [BindProperty]
         public Donation Donation { get; set; } = new Donation();
 
-        [Required]
+        [BindProperty]
+        [Required(ErrorMessage = "Amount is required")]
         [Range(1, 1000000, ErrorMessage = "Please enter a valid amount.")]
         public decimal Amount { get; set; }
 
@@ -45,20 +51,47 @@ namespace AburaFoundationSite.Pages
                 Date = DateTime.UtcNow
             };
 
-            // ========== Handle M-Pesa Logic ==========
+            // ✅ M-Pesa Flow
             if (PaymentMethod == "Mpesa")
             {
-                // Later: Trigger STK Push API here
-                // For now: simulate M-Pesa success
-                donation.Status = "Pending"; // or "Success" if fake simulate
+                try
+                {
+                    var result = await _mpesa.PushAsync(PhoneNumber, Amount);
+                    var json = JsonDocument.Parse(result);
+
+                    donation.Status = "Pending";
+                    donation.Reference = json.RootElement.GetProperty("CheckoutRequestID").GetString();
+
+                    _context.Donations.Add(donation);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToPage("ThankYou");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to initiate M-Pesa transaction: " + ex.Message);
+                    return Page();
+                }
             }
 
-            // ========== Save to DB ==========
+            // ✅ PayPal & Card Flow
+            else if (PaymentMethod == "PayPal" || PaymentMethod == "Card")
+            {
+                // These are processed on the frontend. Backend just records on submission.
+                donation.Status = "Success";
+
+                _context.Donations.Add(donation);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("Receipt", new { id = donation.Id });
+            }
+
+            // ❌ Unsupported Payment
+            donation.Status = "Failed";
             _context.Donations.Add(donation);
             await _context.SaveChangesAsync();
 
-            // ========== Redirect to Receipt ==========
-            return RedirectToPage("Receipt", new { id = donation.Id });
+            return RedirectToPage("Error");
         }
     }
 }
