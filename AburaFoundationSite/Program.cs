@@ -1,9 +1,17 @@
 using AburaFoundationSite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using AburaFoundationSite.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<MpesaAuthService>();
+builder.Services.AddTransient<MpesaStkPushService>();
+builder.Services.AddHttpClient<MpesaStkPushService>();
+builder.Services.Configure<MpesaSettings>(
+    builder.Configuration.GetSection("Mpesa")
+);
+builder.Services.AddHttpClient<MpesaAuthService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -36,7 +44,3 @@ app.Run();
 
 
 // Add services to the container.
-builder.Services.AddSingleton<MpesaAuthService>();
-
-
-

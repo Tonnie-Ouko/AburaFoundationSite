@@ -1,25 +1,39 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging; // ✅ Add this at the top
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using AburaFoundationSite.Models;
+
 
 public class MpesaStkPushService
 {
     private readonly MpesaAuthService _authService;
+    private readonly MpesaSettings _settings;
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _config;
+    private readonly ILogger<MpesaStkPushService> _logger; // ✅ Add this
 
-    public MpesaStkPushService(MpesaAuthService authService, HttpClient httpClient, IConfiguration config)
+    public MpesaStkPushService(
+        MpesaAuthService authService,
+        HttpClient httpClient,
+        IOptions<MpesaSettings> options,
+        IConfiguration config,
+        ILogger<MpesaStkPushService> logger) // ✅ Add logger to constructor
     {
         _authService = authService;
         _httpClient = httpClient;
+        _settings = options.Value;
         _config = config;
+        _logger = logger;
     }
 
-    public async Task<string> PushAsync(string phoneNumber, decimal amount)
+    public async Task<string> InitiateStkPushAsync(string phoneNumber, decimal amount, string accountReference = "Abura Donation", string transactionDesc = "Charity Donation")
     {
         try
         {
@@ -35,36 +49,44 @@ public class MpesaStkPushService
 
             var payload = new
             {
-                BusinessShortCode = shortCode,
+                BusinessShortCode = _settings.ShortCode,
                 Password = password,
                 Timestamp = timestamp,
                 TransactionType = "CustomerPayBillOnline",
                 Amount = amount,
                 PartyA = phoneNumber,
-                PartyB = shortCode,
+                PartyB = _settings.ShortCode,
                 PhoneNumber = phoneNumber,
                 CallBackURL = callbackUrl,
-                AccountReference = "AburaDonation",
-                TransactionDesc = "Donation Payment"
+                AccountReference = accountReference,
+                TransactionDesc = transactionDesc
             };
 
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", content);
+            // ✅ Determine the URL based on environment
+            var baseUrl = _config["Mpesa:Environment"] == "Production"
+                ? "https://api.safaricom.co.ke"
+                : "https://sandbox.safaricom.co.ke";
+
+            var response = await _httpClient.PostAsync($"{baseUrl}/mpesa/stkpush/v1/processrequest", content);
             var responseString = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
-                // Optional: Log the failed response
-                Console.WriteLine("❌ M-Pesa STK push failed: " + responseString);
+                _logger.LogError("❌ M-Pesa STK push failed: {Response}", responseString);
+            }
+            else
+            {
+                _logger.LogInformation("✅ STK Push Initiated Successfully: {Response}", responseString);
             }
 
             return responseString;
         }
         catch (Exception ex)
         {
-            Console.WriteLine("❌ Error in STK push: " + ex.Message);
+            _logger.LogError(ex, "❌ Error in STK push");
             return JsonSerializer.Serialize(new { error = ex.Message });
         }
     }

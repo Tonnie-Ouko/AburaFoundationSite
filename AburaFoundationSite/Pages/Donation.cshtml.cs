@@ -14,13 +14,13 @@ namespace AburaFoundationSite.Pages
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
-        private readonly MpesaStkPushService _mpesa;
+        private readonly MpesaStkPushService _mpesaService;
 
-        public DonationModel(AppDbContext context, IConfiguration config, MpesaStkPushService mpesa)
+        public DonationModel(AppDbContext context, IConfiguration config, MpesaStkPushService mpesaService)
         {
             _context = context;
             _config = config;
-            _mpesa = mpesa;
+            _mpesaService = mpesaService;
         }
 
         [BindProperty]
@@ -43,6 +43,15 @@ namespace AburaFoundationSite.Pages
             if (!ModelState.IsValid)
                 return Page();
 
+            if (Donation.PaymentMethod == "MPesa")
+            {
+                var result = await _mpesaService.InitiateStkPushAsync(PhoneNumber, Donation.Amount);
+                Console.WriteLine("📲 STK Push Response: " + result);
+                TempData["Message"] = "STK Push Sent!";
+                return Page();
+            }
+
+
             var donation = new Donation
             {
                 Amount = Amount,
@@ -56,7 +65,7 @@ namespace AburaFoundationSite.Pages
             {
                 try
                 {
-                    var result = await _mpesa.PushAsync(PhoneNumber, Amount);
+                    var result = await _mpesaService.InitiateStkPushAsync(PhoneNumber, Amount);
                     var json = JsonDocument.Parse(result);
 
                     donation.Status = "Pending";
