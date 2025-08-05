@@ -1,11 +1,15 @@
 using AburaFoundationSite.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using AburaFoundationSite.Models;
+using AburaFoundationSite.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<MpesaAuthService>();
+builder.Services.AddHttpClient<PayPalService>();
 builder.Services.AddTransient<MpesaStkPushService>();
 builder.Services.AddHttpClient<MpesaStkPushService>();
 builder.Services.Configure<MpesaSettings>(

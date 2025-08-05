@@ -114,5 +114,116 @@
                 }
             }).render('#card-button-container');
         };
-    </script>
+
+//new code for paypal - to be checked again
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const methodSelect = document.querySelector("#PaymentMethod"); // dropdown or radio
+        const paypalContainer = document.querySelector("#paypal-button-container");
+        const cardContainer = document.querySelector("#card-fields-container");
+        const statusDiv = document.querySelector("#payment-status");
+
+        if (!methodSelect) return;
+
+        methodSelect.addEventListener("change", function () {
+            const selected = methodSelect.value;
+
+            if (selected === "PayPal") {
+                paypalContainer.style.display = "block";
+                cardContainer.style.display = "none";
+                renderPayPalButtons();
+            } else if (selected === "Card") {
+                paypalContainer.style.display = "none";
+                cardContainer.style.display = "block";
+                renderCardFields();
+            } else {
+                paypalContainer.style.display = "none";
+                cardContainer.style.display = "none";
+            }
+        });
+
+        function renderPayPalButtons() {
+            if (paypal.Buttons) {
+                paypal.Buttons({
+                    createOrder: function (data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: document.querySelector("#Amount").value
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function (data, actions) {
+                        return fetch(`/PayPalCapture?orderId=${data.orderID}`)
+                            .then(res => res.json())
+                            .then(res => {
+                                statusDiv.innerText = "✅ Payment Successful: " + res.status;
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                statusDiv.innerText = "❌ Payment Failed";
+                            });
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
+        function renderCardFields() {
+            paypal.HostedFields.render({
+                createOrder: function () {
+                    return fetch('/PayPalCreateOrder', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            amount: document.querySelector("#Amount").value
+                        })
+                    }).then(res => res.json()).then(data => data.id);
+                },
+                styles: {
+                    'input': { 'font-size': '16px' },
+                    '.valid': { 'color': 'green' },
+                    '.invalid': { 'color': 'red' }
+                },
+                fields: {
+                    number: {
+                        selector: '#card-number',
+                        placeholder: '4111 1111 1111 1111'
+                    },
+                    expirationDate: {
+                        selector: '#card-expiry',
+                        placeholder: 'MM/YY'
+                    },
+                    cvv: {
+                        selector: '#card-cvv',
+                        placeholder: '123'
+                    }
+                }
+            }).then(hostedFieldsInstance => {
+                const donateBtn = document.querySelector("#DonateButton");
+
+                donateBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    hostedFieldsInstance.submit({
+                        contingencies: ['3D_SECURE']
+                    }).then(payload => {
+                        fetch(`/PayPalCapture?orderId=${payload.orderId}`)
+                            .then(res => res.json())
+                            .then(res => {
+                                statusDiv.innerText = "✅ Card Payment Success: " + res.status;
+                            })
+                            .catch(err => {
+                                statusDiv.innerText = "❌ Card Payment Failed";
+                            });
+                    });
+                });
+            });
+        }
+    });
+
+//end of the new code for paypal
+
+</script>
 }
